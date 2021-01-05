@@ -59,4 +59,45 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, registerUser, getUserProfile };
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const { user, body } = req;
+
+  const updates = Object.keys(body);
+  updates.forEach((update) => (user[update] = body[update]));
+  await user.save();
+  res.json(user);
+});
+
+// @route     GET /api/users/logout
+// @desc      Logout a user
+// @access    Private
+const logoutUser = asyncHandler(async (req, res) => {
+  const { user, authToken } = req;
+  user.tokens = user.tokens.filter((token) => {
+    return token.token !== authToken;
+  });
+  await user.save();
+  res.json('Logout successfully');
+});
+
+// @route     GET /api/users/logoutAll
+// @desc      Logout a user from all devices
+// @access    Private
+const logoutAll = asyncHandler(async (req, res) => {
+  const { user } = req;
+  user.tokens = [];
+  await user.save();
+  res.json('Logged out from All devices');
+});
+
+export {
+  authUser,
+  registerUser,
+  getUserProfile,
+  logoutUser,
+  logoutAll,
+  updateUserProfile,
+};
