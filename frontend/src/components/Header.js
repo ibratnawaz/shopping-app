@@ -10,8 +10,9 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
-  const logoutHandler = () => {
-    dispatch(logout())
+  const logoutHandler = (type) => {
+    if (type !== 'all') dispatch(logout(null))
+    else dispatch(logout(type))
   }
 
   return (
@@ -32,13 +33,21 @@ const Header = () => {
               {userInfo ? (
                 <NavDropdown title={userInfo.user.name} id='username'>
                   <LinkContainer to='/my-order'>
-                    <NavDropdown.Item>My Orders</NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <i className='fas fa-shopping-bag'></i> My Orders
+                    </NavDropdown.Item>
                   </LinkContainer>
                   <LinkContainer to='/profile'>
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <i className='fas fa-id-badge'></i> My Profile
+                    </NavDropdown.Item>
                   </LinkContainer>
+                  <NavDropdown.Divider />
                   <NavDropdown.Item onClick={logoutHandler}>
-                    Logout
+                    <i className='fas fa-sign-out-alt'></i> Logout
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={logoutHandler.bind(this, 'all')}>
+                    <i className='fas fa-sign-out-alt'></i> Logout from All
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (

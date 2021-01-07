@@ -19,12 +19,15 @@ const ProfileScreen = ({ location, history }) => {
   const { loading, error, user } = userDetails
 
   const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+  const { userInfo, session } = userLogin
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
   const { success } = userUpdateProfile
 
   useEffect(() => {
+    if (session != null) {
+      history.push('/login')
+    }
     if (!userInfo) {
       history.push('/login')
     } else {
@@ -35,7 +38,7 @@ const ProfileScreen = ({ location, history }) => {
         setEmail(user.email)
       }
     }
-  }, [dispatch, history, userInfo, user, success])
+  }, [dispatch, history, userInfo, user, success, session])
 
   const submitHandler = (e) => {
     e.preventDefault()

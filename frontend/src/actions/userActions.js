@@ -13,6 +13,7 @@ import {
   USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
+  USER_SESSION,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_RESET,
@@ -94,28 +95,38 @@ export const register = (name, email, password) => async (dispatch) => {
   }
 }
 
-export const logout = () => async (dispatch, getState) => {
-  localStorage.removeItem('userInfo')
-  localStorage.removeItem('cartItems')
-  localStorage.removeItem('shippingAddress')
-  localStorage.removeItem('paymentMethod')
-  const {
-    userLogin: { userInfo },
-  } = getState()
+export const logout = (type) => async (dispatch, getState) => {
+  try {
+    localStorage.removeItem('userInfo')
+    localStorage.removeItem('cartItems')
+    localStorage.removeItem('shippingAddress')
+    localStorage.removeItem('paymentMethod')
+    const {
+      userLogin: { userInfo },
+    } = getState()
 
-  const config = {
-    headers: {
-      Authorization: `Bearer ${userInfo.token}`,
-    },
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    if (!type) await axios.get('/api/users/logout', config)
+    else await axios.get('/api/users/logoutAll', config)
+
+    dispatch({ type: USER_LOGOUT })
+    dispatch({ type: CART_CLEAR_ITEMS })
+    dispatch({ type: USER_DETAILS_RESET })
+    dispatch({ type: USER_UPDATE_PROFILE_RESET })
+    dispatch({ type: ORDER_LIST_MY_RESET })
+  } catch (error) {
+    dispatch({ type: USER_LOGOUT })
+    dispatch({ type: CART_CLEAR_ITEMS })
+    dispatch({ type: USER_DETAILS_RESET })
+    dispatch({ type: USER_UPDATE_PROFILE_RESET })
+    dispatch({ type: ORDER_LIST_MY_RESET })
+    dispatch({ type: USER_SESSION })
   }
-
-  await axios.get('/api/users/logout', config)
-
-  dispatch({ type: USER_LOGOUT })
-  dispatch({ type: CART_CLEAR_ITEMS })
-  dispatch({ type: USER_DETAILS_RESET })
-  dispatch({ type: USER_UPDATE_PROFILE_RESET })
-  dispatch({ type: ORDER_LIST_MY_RESET })
 }
 
 export const getUserDetails = (id) => async (dispatch, getState) => {

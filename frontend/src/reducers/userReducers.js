@@ -10,6 +10,7 @@ import {
   USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
+  USER_SESSION,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_RESET,
@@ -21,11 +22,22 @@ export const userLoginReducer = (state = {}, action) => {
     case USER_LOGIN_REQUEST:
       return { loading: true }
     case USER_LOGIN_SUCCESS:
-      return { loading: false, userInfo: action.payload }
+      return {
+        loading: false,
+        userInfo: action.payload,
+        message: null,
+        session: null,
+      }
     case USER_LOGIN_FAIL:
       return { loading: false, error: action.payload }
     case USER_LOGOUT:
       return {}
+    case USER_SESSION:
+      return {
+        session: false,
+        userInfo: null,
+        message: 'Session failed. Login again',
+      }
     default:
       return state
   }

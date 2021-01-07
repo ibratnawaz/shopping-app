@@ -14,7 +14,7 @@ const LoginScreen = ({ location, history }) => {
   const dispatch = useDispatch()
 
   const userLogin = useSelector((state) => state.userLogin)
-  const { loading, error, userInfo } = userLogin
+  const { loading, error, userInfo, session, message } = userLogin
 
   const redirect = location.search ? location.search.split('=')[1] : '/'
 
@@ -22,7 +22,7 @@ const LoginScreen = ({ location, history }) => {
     if (userInfo) {
       history.push(redirect)
     }
-  }, [history, userInfo, redirect])
+  }, [history, userInfo, redirect, session])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -33,6 +33,7 @@ const LoginScreen = ({ location, history }) => {
     <FormContainer>
       <h1>Sign In</h1>
       {error && <Message variant='danger'>{error}</Message>}
+      {message && <Message variant='danger'>{message}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='email'>
