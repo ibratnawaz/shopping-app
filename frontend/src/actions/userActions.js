@@ -1,7 +1,10 @@
 import axios from 'axios'
+import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
 import {
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
+  USER_DETAILS_RESET,
   USER_DETAILS_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
@@ -12,6 +15,7 @@ import {
   USER_REGISTER_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_RESET,
   USER_UPDATE_PROFILE_SUCCESS,
 } from '../constants/userConstants'
 
@@ -93,6 +97,8 @@ export const register = (name, email, password) => async (dispatch) => {
 export const logout = () => async (dispatch, getState) => {
   localStorage.removeItem('userInfo')
   localStorage.removeItem('cartItems')
+  localStorage.removeItem('shippingAddress')
+  localStorage.removeItem('paymentMethod')
   const {
     userLogin: { userInfo },
   } = getState()
@@ -106,6 +112,10 @@ export const logout = () => async (dispatch, getState) => {
   await axios.get('/api/users/logout', config)
 
   dispatch({ type: USER_LOGOUT })
+  dispatch({ type: CART_CLEAR_ITEMS })
+  dispatch({ type: USER_DETAILS_RESET })
+  dispatch({ type: USER_UPDATE_PROFILE_RESET })
+  dispatch({ type: ORDER_LIST_MY_RESET })
 }
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
