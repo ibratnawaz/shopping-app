@@ -20,6 +20,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   const dispatch = useDispatch()
 
@@ -69,6 +70,7 @@ const ProductEditScreen = ({ match, history }) => {
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.token}`,
         },
       }
 
@@ -77,7 +79,7 @@ const ProductEditScreen = ({ match, history }) => {
       setImage(data)
       setUploading(false)
     } catch (error) {
-      console.error(error)
+      setUploadError(error.response.data.message)
       setUploading(false)
     }
   }
@@ -144,6 +146,14 @@ const ProductEditScreen = ({ match, history }) => {
                 custom
                 onChange={uploadFileHandler}></Form.File>
               {uploading && <Loader />}
+              {uploadError ? (
+                <p className='text-danger my-1'>{uploadError}</p>
+              ) : (
+                <small className='text-muted my-1'>
+                  Only jpeg | jpg | png are allowed. Image size must not exceed
+                  5 MB.
+                </small>
+              )}
             </Form.Group>
 
             <Form.Group controlId='brand'>

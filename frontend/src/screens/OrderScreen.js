@@ -93,6 +93,15 @@ const OrderScreen = ({ match, history }) => {
     <>
       <Row>
         <Col xs={12} md={8}>
+          {userInfo && userInfo.user.isAdmin ? (
+            <Link to='/admin/orderlist' className='btn btn-light my-3'>
+              Go Back
+            </Link>
+          ) : (
+            <Link to='/my-order' className='btn btn-light my-3'>
+              Go Back
+            </Link>
+          )}
           <p className='order-id'>Order: {order._id}</p>
 
           <ListGroup variant='flush'>
@@ -197,7 +206,7 @@ const OrderScreen = ({ match, history }) => {
                 </Row>
               </ListGroup.Item>
 
-              {!order.isPaid && (
+              {userInfo && !userInfo.user.isAdmin && !order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
                   {!sdkReady ? (
@@ -212,7 +221,7 @@ const OrderScreen = ({ match, history }) => {
               )}
               {loadingDeliver && <Loader />}
               {userInfo &&
-                userInfo.isAdmin &&
+                userInfo.user.isAdmin &&
                 order.isPaid &&
                 !order.isDelivered && (
                   <ListGroup.Item>
